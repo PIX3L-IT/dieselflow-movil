@@ -66,5 +66,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    //implementation (libs.text.recognition)
+
+    implementation ("com.google.mlkit:text-recognition:16.0.1")
+    implementation("com.vanniktech:android-image-cropper:4.6.0")
 }
