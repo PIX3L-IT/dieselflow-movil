@@ -13,3 +13,6 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Constantes
+app/src/main/java/com/example/kotlin/dieselflow/utils/Constants.kt

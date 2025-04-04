@@ -9,12 +9,12 @@ object NetworkModuleDI {
     private val gsonFactory: GsonConverterFactory = GsonConverterFactory.create()
     private val okHttpClient: OkHttpClient = OkHttpClient()
 
-    operator fun invoke(): DieselFlowApiService {
-        return Retrofit.Builder()
+    operator fun invoke(): DieselFlowApiService =
+        Retrofit
+            .Builder()
             .baseUrl(Constants.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(gsonFactory)
             .build()
             .create(DieselFlowApiService::class.java)
-    }
 }

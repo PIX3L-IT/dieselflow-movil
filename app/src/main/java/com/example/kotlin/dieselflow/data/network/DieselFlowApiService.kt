@@ -1,13 +1,9 @@
 package com.example.kotlin.dieselflow.data.network
 
-import retrofit2.Response
+import com.example.kotlin.dieselflow.data.network.models.ApiResponse
 import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
 
 interface DieselFlowApiService {
-
-    @GET("image/list_images")
-    suspend fun getImageList(): Response<String>
-
+    @GET("test/get-test")
+    suspend fun getTest(): ApiResponse
 }
