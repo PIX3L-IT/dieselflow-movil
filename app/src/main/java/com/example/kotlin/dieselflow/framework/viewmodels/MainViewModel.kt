@@ -14,7 +14,6 @@ import retrofit2.Response
 
 class MainViewModel(
     private val getImagesRequirement: DieselFlowRequirement = DieselFlowRequirement(),
-    private val uploadImageRequirement: UploadImageRequirement = UploadImageRequirement()
 ) : ViewModel() {
 
     private val _images = MutableStateFlow<List<String>>(emptyList())
@@ -33,18 +32,5 @@ class MainViewModel(
         }
     }
 
-    private val _uploadState = MutableStateFlow<Result<Response<ResponseBody>>?>(null)
-    val uploadState: StateFlow<Result<Response<ResponseBody>>?> = _uploadState
-
-    fun uploadImage(file: MultipartBody.Part) {
-        viewModelScope.launch {
-            try {
-                val response = uploadImageRequirement(file)
-                _uploadState.value = Result.success(response)
-            } catch (e: Exception) {
-                _uploadState.value = Result.failure(e)
-            }
-        }
-    }
 }
 
