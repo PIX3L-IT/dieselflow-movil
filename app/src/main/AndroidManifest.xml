@@ -36,11 +36,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".UploadActivity"
-            android:theme="@style/Theme.Dieselflow"
-        />
-
         <!-- FileProvider necesario para usar la cámara y guardar imagen temporal -->
         <provider
             android:name="androidx.core.content.FileProvider"

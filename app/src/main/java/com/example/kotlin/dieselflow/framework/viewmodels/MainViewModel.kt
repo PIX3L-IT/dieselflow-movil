@@ -3,34 +3,33 @@ package com.example.kotlin.dieselflow.framework.viewmodels
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.kotlin.dieselflow.domain.DieselFlowRequirement
-import com.example.kotlin.dieselflow.domain.UploadImageRequirement
+import com.example.kotlin.dieselflow.data.network.models.Usuario
+import com.example.kotlin.dieselflow.data.repositories.MainRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import okhttp3.MultipartBody
-import okhttp3.ResponseBody
-import retrofit2.Response
 
 class MainViewModel(
-    private val getImagesRequirement: DieselFlowRequirement = DieselFlowRequirement(),
+    private val mainRepository: MainRepository = MainRepository() // Aquí se inyecta el repositorio
 ) : ViewModel() {
 
-    private val _images = MutableStateFlow<List<String>>(emptyList())
-    val images: StateFlow<List<String>> get() = _images
+    // Lista de usuarios que se observa desde la UI
+    private val _usuarios = MutableStateFlow<List<Usuario>>(emptyList())
+    val usuarios: StateFlow<List<Usuario>> get() = _usuarios
 
-    fun fetchImages() {
+    // Función para obtener los usuarios
+    fun fetchUsuarios() {
         viewModelScope.launch {
             try {
-                val imageUrls = getImagesRequirement()
-                Log.d("MainViewModel", "Fetched Images: $imageUrls")
-                _images.value = imageUrls
+                val usuarioList = mainRepository.getUsers() // Llama al repositorio para obtener los usuarios
+                Log.d("MainViewModel", "Fetched Usuarios: $usuarioList")
+                _usuarios.value = usuarioList // Actualiza el estado con la lista de usuarios
             } catch (e: Exception) {
-                Log.e("MainViewModel", "Error fetching images: ${e.message}")
-                _images.value = emptyList()
+                Log.e("MainViewModel", "Error fetching usuarios: ${e.message}")
+                _usuarios.value = emptyList() // En caso de error, se limpia la lista
             }
         }
     }
-
 }
+
 
