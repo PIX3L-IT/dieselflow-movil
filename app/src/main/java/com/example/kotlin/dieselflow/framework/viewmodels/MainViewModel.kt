@@ -1,44 +1,33 @@
 package com.example.kotlin.dieselflow.framework.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.kotlin.dieselflow.domain.DieselFlowRequirement
-import com.example.kotlin.dieselflow.data.network.models.LoginResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import okhttp3.ResponseBody
 import retrofit2.HttpException
-import retrofit2.Response
+import android.util.Log
+import com.example.kotlin.dieselflow.domain.DieselFlowRequirement
+import java.io.IOException
+import com.google.gson.JsonParseException
 
 class MainViewModel : ViewModel() {
     private val dieselFlowRequirement = DieselFlowRequirement()
     val loginSuccess = MutableLiveData<Boolean>()
     val loginError = MutableLiveData<String>()
 
+    private var accessToken: String? = null
+    private var refreshToken: String? = null
+
     fun login(email: String, password: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            Log.d("Login", "Intentando hacer login con email: $email")
-
             try {
-                // Realiza la llamada al repositorio para hacer el login
                 val response = dieselFlowRequirement.login(email, password)
 
                 if (response.isSuccessful) {
-                    // Si la respuesta es exitosa, obtiene los tokens
                     val loginResponse = response.body()
-                    val accessToken = loginResponse?.accessToken
-                    val refreshToken = loginResponse?.refreshToken
-
-                    // Muestra los tokens en Logcat
-                    if (accessToken != null && refreshToken != null) {
-                        Log.d("Login", "Access Token: $accessToken")
-                        Log.d("Login", "Refresh Token: $refreshToken")
-                    } else {
-                        Log.e("Login", "Tokens no disponibles en la respuesta.")
-                    }
-
+                    accessToken = loginResponse?.accessToken
+                    refreshToken = loginResponse?.refreshToken
                     loginSuccess.postValue(true)
                 } else {
                     Log.e("Login", "Error al hacer login: ${response.code()} - ${response.message()}")
@@ -47,13 +36,21 @@ class MainViewModel : ViewModel() {
                 }
 
             } catch (e: HttpException) {
-                Log.e("Login", "Excepción HTTP: ${e.message()}")
+                Log.e("Login", "Respuesta HTTP no exitosa: ${e.code()} - ${e.message()}")
                 loginSuccess.postValue(false)
-                loginError.postValue("Excepción HTTP: ${e.message()}")
+                loginError.postValue("Error en la solicitud, por favor intenta de nuevo")
+            } catch (e: IOException) {
+                Log.e("Login", "Fallo de red: ${e.localizedMessage}")
+                loginSuccess.postValue(false)
+                loginError.postValue("Error en la solicitud, por favor intenta de nuevo")
+            } catch (e: JsonParseException) {
+                Log.e("Login", "Error al parsear JSON: ${e.localizedMessage}")
+                loginSuccess.postValue(false)
+                loginError.postValue("Error en la solicitud, por favor intenta de nuevo")
             } catch (e: Exception) {
-                Log.e("Login", "Error desconocido: ${e.localizedMessage}")
+                Log.e("Login", "Error inesperado: ${e.localizedMessage}")
                 loginSuccess.postValue(false)
-                loginError.postValue("Error desconocido: ${e.localizedMessage}")
+                loginError.postValue("Error en la solicitud, por favor intenta de nuevo")
             }
         }
     }

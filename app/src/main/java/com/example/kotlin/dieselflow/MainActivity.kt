@@ -30,8 +30,11 @@ class MainActivity : ComponentActivity() {
             val emailText = email.text.toString()
             val passwordText = password.text.toString()
 
+            // Manejar el caso de que falten datos
             if (emailText.isBlank() || passwordText.isBlank()) {
-                Toast.makeText(this, "Por favor, ingresa tus credenciales", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this,
+                    "Por favor, ingresa tus credenciales",
+                    Toast.LENGTH_SHORT).show()
                 Log.e("Login", "Email o contraseña vacíos")
                 return@setOnClickListener
             }
@@ -40,23 +43,21 @@ class MainActivity : ComponentActivity() {
             viewModel.login(emailText, passwordText)
         }
 
-        // Observa si el login fue exitoso
+        // Observa condiciones del login
         viewModel.loginSuccess.observe(this) { success ->
             if (success) {
-                Toast.makeText(this, "¡Login exitoso!", Toast.LENGTH_SHORT).show()
-                startActivity(Intent(this, MainActivity::class.java)) // O lo que corresponda a tu flujo
+                Toast.makeText(this,
+                    "Login exitoso!",
+                    Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this, MainActivity::class.java))
                 finish()
             } else {
-                Toast.makeText(this, "Error en el login", Toast.LENGTH_SHORT).show()
-                Log.e("Login", "Login fallido: error desconocido")
+                Toast.makeText(this,
+                    "Error en la solicitud, por favor intenta de nuevo",
+                    Toast.LENGTH_SHORT).show()
             }
         }
 
-        // Observa errores específicos del login
-        viewModel.loginError.observe(this) { error ->
-            Log.e("Login", "Error específico: $error")
-            Toast.makeText(this, "Error: $error", Toast.LENGTH_SHORT).show()
-        }
     }
 }
 
