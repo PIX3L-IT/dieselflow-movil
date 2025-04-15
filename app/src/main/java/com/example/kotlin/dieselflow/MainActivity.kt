@@ -31,7 +31,6 @@ class MainActivity : ComponentActivity() {
             val passwordText = password.text.toString()
             val type = "Conductor"
 
-            // Manejar el caso de que falten datos
             if (userText.isBlank() || passwordText.isBlank()) {
                 Toast.makeText(this,
                     "Por favor, ingresa tus credenciales",
@@ -44,23 +43,24 @@ class MainActivity : ComponentActivity() {
             viewModel.login(userText, passwordText, type)
         }
 
-        // Observa condiciones del login
+        // Observa el éxito del login
         viewModel.loginSuccess.observe(this) { success ->
             if (success) {
                 Toast.makeText(this,
                     "Login exitoso!",
                     Toast.LENGTH_SHORT).show()
-                startActivity(Intent(this, MainActivity::class.java))
+                startActivity(Intent(this, MainActivity::class.java)) // Aquí podrías ir a otra activity
                 finish()
-            } else {
-                Toast.makeText(this,
-                    "Error en la solicitud, por favor intenta de nuevo",
-                    Toast.LENGTH_SHORT).show()
             }
         }
 
+        // Observa los errores del login y muestra un mensaje específico
+        viewModel.loginError.observe(this) { errorMessage ->
+            Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
+        }
     }
 }
+
 
 
 

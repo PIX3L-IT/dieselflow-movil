@@ -25,14 +25,30 @@ class MainViewModel : ViewModel() {
                 val response = dieselFlowRequirement.login(user, password, type)
 
                 if (response.isSuccessful) {
-                    val loginResponse = response.body()
-                    accessToken = loginResponse?.accessToken
-                    refreshToken = loginResponse?.refreshToken
-                    loginSuccess.postValue(true)
+                    val contentType = response.headers()["Content-Type"]
+
+                    if (contentType?.contains("application/json") == true) {
+                        val loginResponse = response.body()
+                        accessToken = loginResponse?.accessToken
+                        refreshToken = loginResponse?.refreshToken
+                        loginSuccess.postValue(true)
+                    } else {
+                        // Es HTML, por lo tanto es un error renderizado del servidor
+                        loginSuccess.postValue(false)
+                        loginError.postValue("Credenciales inválidas")
+                    }
+
                 } else {
-                    Log.e("Login", "Error al hacer login: ${response.code()} - ${response.message()}")
+                    // Si no es exitoso, intenta leer el cuerpo de error (HTML o texto)
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("Login", "Error body: $errorBody")
                     loginSuccess.postValue(false)
-                    loginError.postValue("Error: ${response.code()} - ${response.message()}")
+
+                    if (errorBody?.contains("Credenciales inválidas", ignoreCase = true) == true) {
+                        loginError.postValue("Credenciales inválidas")
+                    } else {
+                        loginError.postValue("Error: ${response.code()} - ${response.message()}")
+                    }
                 }
 
             } catch (e: HttpException) {
