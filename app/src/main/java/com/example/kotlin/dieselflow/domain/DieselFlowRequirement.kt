@@ -7,7 +7,7 @@ import retrofit2.Response
 class DieselFlowRequirement {
     private val repository = MainRepository()
 
-    suspend fun login(email: String, password: String): Response<LoginResponse> {
-        return repository.login(email, password)
+    suspend fun login(user: String, password: String, type:String): Response<LoginResponse> {
+        return repository.login(user, password, type)
     }
 }

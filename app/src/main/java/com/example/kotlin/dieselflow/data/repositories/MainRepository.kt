@@ -11,7 +11,7 @@ class MainRepository {
     private val api: DieselFlowApiService = NetworkModuleDI()
 
     //Para conectar nuestro ApiService y NetworkModule
-    suspend fun login(email: String, password: String): Response<LoginResponse> =
-        api.loginUser(LoginRequest(email, password))
+    suspend fun login(user: String, password: String, type: String): Response<LoginResponse> =
+        api.loginUser(LoginRequest(user, password, type))
 }
 

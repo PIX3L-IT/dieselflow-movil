@@ -21,17 +21,18 @@ class MainActivity : ComponentActivity() {
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
         // Referencias a los campos de entrada
-        val email = findViewById<EditText>(R.id.etEmail)
+        val user = findViewById<EditText>(R.id.etUser)
         val password = findViewById<EditText>(R.id.etPassword)
         val loginButton = findViewById<Button>(R.id.btnLogin)
 
         // Configura el botón de login
         loginButton.setOnClickListener {
-            val emailText = email.text.toString()
+            val userText = user.text.toString()
             val passwordText = password.text.toString()
+            val type = "Conductor"
 
             // Manejar el caso de que falten datos
-            if (emailText.isBlank() || passwordText.isBlank()) {
+            if (userText.isBlank() || passwordText.isBlank()) {
                 Toast.makeText(this,
                     "Por favor, ingresa tus credenciales",
                     Toast.LENGTH_SHORT).show()
@@ -40,7 +41,7 @@ class MainActivity : ComponentActivity() {
             }
 
             // Llama al método de login del ViewModel
-            viewModel.login(emailText, passwordText)
+            viewModel.login(userText, passwordText, type)
         }
 
         // Observa condiciones del login

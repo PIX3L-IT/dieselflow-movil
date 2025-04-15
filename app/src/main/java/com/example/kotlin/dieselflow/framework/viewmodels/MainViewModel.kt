@@ -19,10 +19,10 @@ class MainViewModel : ViewModel() {
     private var accessToken: String? = null
     private var refreshToken: String? = null
 
-    fun login(email: String, password: String) {
+    fun login(user: String, password: String, type: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val response = dieselFlowRequirement.login(email, password)
+                val response = dieselFlowRequirement.login(user, password, type)
 
                 if (response.isSuccessful) {
                     val loginResponse = response.body()
