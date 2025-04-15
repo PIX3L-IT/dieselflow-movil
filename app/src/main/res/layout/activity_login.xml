@@ -5,7 +5,7 @@
     android:id="@+id/loginLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="#FEFEFE"
     tools:context=".MainActivity">
 
     <!-- Esquina superior izquierda -->
@@ -122,6 +122,7 @@
         android:layout_height="111dp"
         android:scaleType="fitXY"
         android:src="@drawable/modal4"
+        android:layout_marginBottom="-1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
