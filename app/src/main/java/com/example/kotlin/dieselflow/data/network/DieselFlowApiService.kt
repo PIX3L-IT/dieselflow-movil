@@ -8,7 +8,7 @@ import retrofit2.http.POST
 
 interface DieselFlowApiService {
 
-    @POST("/login")
+    @POST("/tablero")
     suspend fun loginUser(@Body request: LoginRequest): Response<LoginResponse>
 }
 
