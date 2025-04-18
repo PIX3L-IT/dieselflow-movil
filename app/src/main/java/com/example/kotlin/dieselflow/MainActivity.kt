@@ -1,35 +1,66 @@
 package com.example.kotlin.dieselflow
 
 import android.os.Bundle
+import android.util.Log
+import android.widget.EditText
+import android.widget.Button
+import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.kotlin.dieselflow.databinding.ActivityMainBinding
+import android.content.Intent
+import androidx.lifecycle.ViewModelProvider
 import com.example.kotlin.dieselflow.framework.viewmodels.MainViewModel
-import com.example.kotlin.dieselflow.ui.theme.DieselflowTheme
 
 class MainActivity : ComponentActivity() {
-
-    private val viewModel : MainViewModel by viewModels()
-    private lateinit var binding : ActivityMainBinding
+    private lateinit var viewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initializeBinding()
-        viewModel.getImageList()
-    }
-    private fun initializeBinding() {
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_login)
+
+        // Inicializa el ViewModel
+        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
+
+        // Referencias a los campos de entrada
+        val user = findViewById<EditText>(R.id.etUser)
+        val password = findViewById<EditText>(R.id.etPassword)
+        val loginButton = findViewById<Button>(R.id.btnLogin)
+
+        // Configura el botón de login
+        loginButton.setOnClickListener {
+            val userText = user.text.toString()
+            val passwordText = password.text.toString()
+            val type = "Conductor"
+
+            if (userText.isBlank() || passwordText.isBlank()) {
+                Toast.makeText(this,
+                    "Por favor, ingresa tus credenciales",
+                    Toast.LENGTH_SHORT).show()
+                Log.e("Login", "Email o contraseña vacíos")
+                return@setOnClickListener
+            }
+
+            // Llama al método de login del ViewModel
+            viewModel.login(userText, passwordText, type)
+        }
+
+        // Observa el éxito del login
+        viewModel.loginSuccess.observe(this) { success ->
+            if (success) {
+                Toast.makeText(this,
+                    "Login exitoso!",
+                    Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this, MainActivity::class.java)) // Aquí podrías ir a otra activity
+                finish()
+            }
+        }
+
+        // Observa los errores del login y muestra un mensaje específico
+        viewModel.loginError.observe(this) { errorMessage ->
+            Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
+        }
     }
 }
+
+
 
 

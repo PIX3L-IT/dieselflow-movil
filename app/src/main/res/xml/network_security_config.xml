@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
     <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">10.25.97.132</domain> <!-- Or your local IP -->
+        <domain includeSubdomains="true">10.25.97.132</domain>
+        <domain includeSubdomains="true">TU_IP</domain>
     </domain-config>
 </network-security-config>
